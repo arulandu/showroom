@@ -1,0 +1,61 @@
+// CONFIG
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// USER
+
+model User {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  email String @unique
+  admin Boolean @default(false)
+
+  webSession WebSession?
+  actions Action[]
+}
+
+model WebSession {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  createdAt DateTime @default(now())
+  token String @unique
+  user User? @relation(fields: [userId], references: [id])
+  userId String? @db.ObjectId @unique
+}
+
+// PRODUCT
+
+model Product {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @unique
+  quantity Int @default(0)
+
+  actions Action[]
+}
+
+enum ActionType {
+  BUY
+  SELL
+}
+
+model Action {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  createdAt DateTime @default(now())
+  type ActionType
+  quantity Int
+  money Float
+
+  product Product? @relation(fields: [productId], references: [id])
+  productId String? @db.ObjectId
+
+  user User? @relation(fields: [userId], references: [id])
+  userId String? @db.ObjectId
+}
