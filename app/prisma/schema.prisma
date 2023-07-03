@@ -20,7 +20,7 @@ model User {
   webSession WebSession?
   actions Action[]
 }
-
+ 
 model WebSession {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   
