@@ -9,53 +9,136 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// USER
-
-model User {
+// CUSTOMER
+model Customer {
   id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  name String
+  email String
+  phone String
+  address String
+
+  storeCredit Float @default(0)
+  orders Order[]
+}
+
+// EMPLOYEE
+model Employee {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
   name String
   email String @unique
   admin Boolean @default(false)
 
-  webSession WebSession?
-  actions Action[]
+  session Session?
+
+  orders Order[]
 }
  
-model WebSession {
+model Session {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   
   createdAt DateTime @default(now())
   token String @unique
-  user User? @relation(fields: [userId], references: [id])
-  userId String? @db.ObjectId @unique
+
+  employee Employee? @relation(fields: [employeeId], references: [id])
+  employeeId String? @db.ObjectId @unique
 }
 
 // PRODUCT
 
 model Product {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  name String @unique
-  quantity Int @default(0)
-
-  actions Action[]
-}
-
-enum ActionType {
-  BUY
-  SELL
-}
-
-model Action {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
   
+  name String @unique
+  description String @default("")
+
+  basePrice Float // per unit
+  inventory Inventory?
+
+  orderItems OrderItem[]
+
+  // TODO: GST tax rates (cGST + sGST)
+}
+
+model Inventory {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  stock Int
+  
+  product Product @relation(fields: [productId], references: [id])
+  productId String @db.ObjectId @unique
+}
+
+// ORDER
+
+model Order {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   createdAt DateTime @default(now())
-  type ActionType
+
+  items OrderItem[]
+  notes String @default("")
+
+  invoice Invoice? // effectively required
+  
+  customer Customer @relation(fields: [customerId], references: [id])
+  customerId String @db.ObjectId
+
+  employee Employee @relation(fields: [employeeId], references: [id])
+  employeeId String @db.ObjectId
+}
+
+model OrderItem {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  price Float
   quantity Int
-  money Float
+  discountRate Float @default(0)
 
   product Product? @relation(fields: [productId], references: [id])
   productId String? @db.ObjectId
 
-  user User? @relation(fields: [userId], references: [id])
-  userId String? @db.ObjectId
+  order Order @relation(fields: [orderId], references: [id])
+  orderId String @db.ObjectId
+}
+
+// 
+
+model Promotions {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  startDate DateTime
+  endDate DateTime
+}
+
+// PAYMENT
+
+model Invoice {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+
+  amount Float
+  amountPaid Float @default(0)
+  payments Payment[]
+
+  order Order @relation(fields: [orderId], references: [id])
+  orderId String @db.ObjectId @unique
+}
+
+model Payment {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+
+  amount Float
+  method PaymentMethod
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id])
+  invoiceId String @db.ObjectId @unique
+}
+
+enum PaymentMethod {
+  CASH
+  CHECK
+  CARD
+  GPAY
+  STORECREDIT
 }
