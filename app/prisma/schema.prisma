@@ -54,20 +54,24 @@ model Product {
   description String @default("")
 
   basePrice Float // per unit
-  inventory Inventory?
+  cgstTaxRate Float @default(0)
+  sgstTaxRate Float @default(0)
+
+  stock Int?
+  stockEvents StockEvent[]
 
   orderItems OrderItem[]
-
-  // TODO: GST tax rates (cGST + sGST)
 }
 
-model Inventory {
+model StockEvent {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-
-  stock Int
+  createdAt DateTime @default(now())
   
+  delta Int
+  price Float // net price snapshot
+
   product Product @relation(fields: [productId], references: [id])
-  productId String @db.ObjectId @unique
+  productId String @db.ObjectId
 }
 
 // ORDER
@@ -93,7 +97,6 @@ model OrderItem {
 
   price Float
   quantity Int
-  discountRate Float @default(0)
 
   product Product? @relation(fields: [productId], references: [id])
   productId String? @db.ObjectId
@@ -102,13 +105,14 @@ model OrderItem {
   orderId String @db.ObjectId
 }
 
-// 
+// // PROMOTIONS
 
-model Promotions {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  startDate DateTime
-  endDate DateTime
-}
+// model Promotions {
+//   id String @id @default(auto()) @map("_id") @db.ObjectId
+//   startDate DateTime
+//   endDate DateTime
+//   discountRate Float
+// }
 
 // PAYMENT
 

@@ -13,3 +13,21 @@
 A scalable motorcycle showroom management system for Joven Motors in Tamil Nadu, India. 
 
 Built by [Alvan Caleb Arlandu](https://arulandu.com/).
+
+## TODO
+when employees buy product, it inccurs an expense AND changes the stock in the inventory. 
+businesses have other expenses. 
+orders generate invoices which incurr payment transactions which generate revenue. revenue is a negative expense. 
+orders contain order items which may change stock when sold. 
+
+users might want functionality to see profit from one particular product.
+
+ProfitDelta {
+
+}
+
+employees:
+order flow -> create orders. print receipts.
+account flow -> account lookup. invoices etc. 
+inventory flow -> view inventory. stock inventory.
+product flow -> set prices etc.
