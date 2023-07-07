@@ -17,6 +17,7 @@ model Customer {
   email String
   phone String
   address String
+  pfp String?
 
   storeCredit Float @default(0)
   orders Order[]
@@ -28,6 +29,8 @@ model Employee {
   
   name String
   email String @unique
+  pfp String?
+  
   admin Boolean @default(false)
 
   session Session?

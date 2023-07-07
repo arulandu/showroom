@@ -1,6 +1,6 @@
 "use client"
 
-import * as React from "react"
+import { signIn, signOut, useSession } from "next-auth/react"
 import Link from "next/link"
 
 import {
@@ -15,23 +15,24 @@ import {
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { Cog, Cog as CogIcon } from "lucide-react"
+import { ComponentPropsWithoutRef, ElementRef, forwardRef, useEffect } from "react"
 
 const components: { title: string; href: string; description: string }[] = [
   {
     title: "Customer",
-    href: "/customer",
+    href: "/dashboard/customer",
     description:
       "Customer search. View customer order history and pending invoices.",
   },
   {
     title: "Order",
-    href: "/order",
+    href: "/dashboard/order",
     description:
       "Create orders and print reciepts. Automatically compute cGST+sGST taxes.",
   },
   {
     title: "Product",
-    href: "/product",
+    href: "/dashboard/product",
     description:
       "View products. Set prices. Stock inventory.",
   },
@@ -39,9 +40,11 @@ const components: { title: string; href: string; description: string }[] = [
 
 
 export function Navigation() {
+  const session = useSession()
+
   return (
-    <div className="mt-2 mx-4 flex">
-      <Button variant="link" asChild>
+    <div className="flex">
+      <Button variant="link" className="pl-0" asChild>
         <Link href="/">
           Joven Motors
           {/* <CogIcon /> */}
@@ -49,34 +52,43 @@ export function Navigation() {
       </Button>
       <NavigationMenu className="ml-2">
         <NavigationMenuList>
-          <NavigationMenuItem>
-            <NavigationMenuTrigger>Dashboard</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid w-64 gap-3 p-4 md:w-72 grid-cols-1 lg:w-96 ">
-                {components.map((component) => (
-                  <ListItem
-                    key={component.title}
-                    title={component.title}
-                    href={component.href}
-                  >
-                    {component.description}
-                  </ListItem>
-                ))}
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
+          {session ?
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>Dashboard</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid w-64 gap-3 p-4 md:w-72 grid-cols-1 lg:w-96 ">
+                  {components.map((component) => (
+                    <ListItem
+                      key={component.title}
+                      title={component.title}
+                      href={component.href}
+                    >
+                      {component.description}
+                    </ListItem>
+                  ))}
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+            : null
+          }
         </NavigationMenuList>
       </NavigationMenu>
-      <Button variant="default" asChild className="ml-auto mr-0">
-        <Link href="/login">Login {"->"}</Link>
-      </Button>
+      {session ?
+        <Button variant="default" className="ml-auto mr-0" onClick={() => signOut()}>
+          Log Out
+        </Button>
+        :
+        <Button variant="default" className="ml-auto mr-0" onClick={() => signIn("google")}>
+          Login {"->"}
+        </Button>
+      }
     </div>
   )
 }
 
-const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
+const ListItem = forwardRef<
+  ElementRef<"a">,
+  ComponentPropsWithoutRef<"a">
 >(({ className, title, children, ...props }, ref) => {
   return (
     <li>
