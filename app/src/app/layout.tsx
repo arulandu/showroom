@@ -17,13 +17,14 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const session = await getServerSession(authOptions)
+  const serverSession = await getServerSession(authOptions)
+
   return (
     <html lang="en">
       <body className={inter.className}>
-        <NextAuthProvider session={session}>
+        <NextAuthProvider>
           <main className="p-4 min-h-screen flex flex-col justify-start">
-            <Navigation />
+            <Navigation session={serverSession}/>
             {children}
           </main>
         </NextAuthProvider>

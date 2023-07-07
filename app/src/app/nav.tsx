@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { Cog, Cog as CogIcon } from "lucide-react"
 import { ComponentPropsWithoutRef, ElementRef, forwardRef, useEffect } from "react"
+import { Session } from "inspector"
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -38,10 +39,7 @@ const components: { title: string; href: string; description: string }[] = [
   },
 ]
 
-
-export function Navigation() {
-  const session = useSession()
-
+export function Navigation({session}: {session: Session | null}) {
   return (
     <div className="flex">
       <Button variant="link" className="pl-0" asChild>
