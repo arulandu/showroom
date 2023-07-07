@@ -2,10 +2,10 @@ import './globals.css'
 import { atom, useAtom } from "jotai"
 import { Inter } from 'next/font/google'
 import { Providers } from './providers'
-import { authOptions } from './api/auth/[...nextauth]/route'
-import { getServerSession } from 'next-auth'
 import { Navigation } from './nav'
+import { getSession } from '@/lib/session'
 import { SessionComponent } from './session'
+import { Toaster } from '@/components/ui/toaster'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,7 +19,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const session = await getServerSession(authOptions)
+  const session = await getSession()
 
   return (
     <html lang="en">
@@ -30,6 +30,7 @@ export default async function RootLayout({
               <Navigation />
               {children}
             </main>
+            <Toaster/>
           </SessionComponent>
         </Providers>
       </body>

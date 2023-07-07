@@ -1,0 +1,1 @@
+export const handleChange = (setter: (x: any) => any) => ((e: any) => setter(e.target.value))

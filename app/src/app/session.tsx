@@ -1,7 +1,11 @@
 "use client"
+import { Employee } from "@prisma/client"
 import {atom} from "jotai"
 import { useHydrateAtoms } from "jotai/utils"
-import { Session } from "next-auth"
+
+export type Session = {
+  user: Employee
+}
 
 export const sessionAtom = atom<Session | null>(null)
 

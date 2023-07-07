@@ -19,29 +19,35 @@ import { ComponentPropsWithoutRef, ElementRef, forwardRef, useEffect } from "rea
 import { Session } from "inspector"
 import { sessionAtom } from "@/app/session"
 
-const components: { title: string; href: string; description: string }[] = [
-  {
-    title: "Customer",
-    href: "/dashboard/customer",
-    description:
-      "Customer search. View customer order history and pending invoices.",
-  },
-  {
-    title: "Order",
-    href: "/dashboard/order",
-    description:
-      "Create orders and print reciepts. Automatically compute cGST+sGST taxes.",
-  },
-  {
-    title: "Product",
-    href: "/dashboard/product",
-    description:
-      "View products. Set prices. Stock inventory.",
-  },
-]
-
 export function Navigation() {
   const [session] = useAtom(sessionAtom)
+
+  const components: { title: string; href: string; description: string }[] = [
+    {
+      title: "Customer",
+      href: "/dashboard/customer",
+      description:
+        "Customer search. View customer order history and pending invoices.",
+    },
+    {
+      title: "Order",
+      href: "/dashboard/order",
+      description:
+        "Create orders and print reciepts. Automatically compute cGST+sGST taxes.",
+    },
+    {
+      title: "Product",
+      href: "/dashboard/product",
+      description:
+        "View products. Set prices. Stock inventory.",
+    },
+    ... (session?.user.admin ? [{
+      title: "Employee",
+      href: "/dashboard/employee",
+      description: "Create, manage, and view actions of employees."
+    }] : [])
+  ]
+  
   return (
     <div className="flex">
       <Button variant="link" className="pl-0" asChild>
