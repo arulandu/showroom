@@ -2,7 +2,7 @@
 
 import { signIn, signOut, useSession } from "next-auth/react"
 import Link from "next/link"
-
+import {useAtom} from "jotai"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils"
 import { Cog, Cog as CogIcon } from "lucide-react"
 import { ComponentPropsWithoutRef, ElementRef, forwardRef, useEffect } from "react"
 import { Session } from "inspector"
+import { sessionAtom } from "@/app/session"
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -39,7 +40,8 @@ const components: { title: string; href: string; description: string }[] = [
   },
 ]
 
-export function Navigation({session}: {session: Session | null}) {
+export function Navigation() {
+  const [session] = useAtom(sessionAtom)
   return (
     <div className="flex">
       <Button variant="link" className="pl-0" asChild>
