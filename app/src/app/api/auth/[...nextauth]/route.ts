@@ -13,21 +13,29 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async signIn({ user }) {
-      try {
-        const dbUser = await db.employee.create({
-          data: {
-            name: user.name as string,
-            email: user.email as string,
-            pfp: user.image
-          }
-        })
-
-        // TODO: new employee onboarding
-      } catch {
-        // user already exists
+      const dbUser = await db.employee.findFirst({
+        where: {
+          email: user.email as string
+        }
+      })
+      
+      // TODO: Verification flow? For now, create admin functionality that let's them add employees. db object must exist before sign in.
+      // TODO: fix current can't log in error ui to be better but tbh who cares.
+      if(dbUser) {
+        if(dbUser.name != user.name || dbUser.pfp == null) {
+          await db.employee.update({
+            where: {
+              id: dbUser.id
+            },
+            data: {
+              name: user.name as string,
+              pfp: user.image
+            }
+          })
+        }
+        return true;
       }
-
-      return true
+      return false;
     },
     async session({ session, token, user }) {
       if (!session.user || !session.user.email) return session
