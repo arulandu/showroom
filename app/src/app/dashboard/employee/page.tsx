@@ -1,13 +1,14 @@
+import { getSession } from "@/lib/session";
 import { RegisterEmployee } from "./register";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
-
+  const session = await getSession()
+  if(!session.user.admin) redirect('/404')
+  
   return (
     <>
       <div className='max-h-screen flex-grow flex flex-col items-center justify-center'>
-        <h1 className="mb-4 scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-          Employee Management
-        </h1>
         <RegisterEmployee />
       </div>
     </>
