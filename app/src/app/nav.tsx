@@ -80,11 +80,11 @@ export function Navigation() {
         </NavigationMenuList>
       </NavigationMenu>
       {session ?
-        <Button variant="default" className="ml-auto mr-0" onClick={() => signOut()}>
+        <Button variant="default" className="ml-auto mr-0" onClick={() => signOut({callbackUrl: "/"})}>
           Log Out
         </Button>
         :
-        <Button variant="default" className="ml-auto mr-0" onClick={() => signIn("google")}>
+        <Button variant="default" className="ml-auto mr-0" onClick={() => signIn("google", {callbackUrl: window.location.pathname === "/404" ? "/" : window.location.pathname})}>
           Login {"->"}
         </Button>
       }

@@ -16,11 +16,13 @@ export default async function Home() {
                   {prod.name} {prod.stock ? `(Qt. ${prod.stock})` : ""}
                 </CardTitle>
                 <CardDescription>
-                  {prod.description}
+                  {prod.id}
+
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                Price: {prod.basePrice} CGST: {prod.cgstTaxRate} SGST: {prod.sgstTaxRate}
+                <p>{prod.description}</p>
+                <p>Price: {prod.basePrice} CGST: {prod.cgstTaxRate} SGST: {prod.sgstTaxRate}</p>
               </CardContent>
               <CardFooter>
                 {prod.tags.map(tag =>
