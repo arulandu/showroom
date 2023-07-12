@@ -225,6 +225,10 @@ export function TagFilter({
     setSelectedTags(Array.from(selectedSet))
   }
 
+  const clearTags = () => {
+    setSelectedTags([])
+  }
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -309,7 +313,7 @@ export function TagFilter({
                 <CommandSeparator />
                 <CommandGroup>
                   <CommandItem
-                    onSelect={() => console.log("clear filters")}
+                    onSelect={() => clearTags()}
                     className="justify-center text-center"
                   >
                     Clear filters
