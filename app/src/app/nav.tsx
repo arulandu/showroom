@@ -49,7 +49,7 @@ export function Navigation() {
   ]
   
   return (
-    <div className="flex">
+    <div className="flex z-10 bg-opacity-25">
       <Button variant="link" className="pl-0" asChild>
         <Link href="/">
           Joven Motors

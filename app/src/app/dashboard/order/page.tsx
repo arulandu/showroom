@@ -1,39 +1,16 @@
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { db } from "@/lib/db"
+import Search from "./search"
 
 export default async function Home() {
   const products = await db.product.findMany({ include: { tags: { select: { id: true, name: true } } } })
 
   return (
     <>
-      <div className=' max-h-screen flex-grow flex flex-col items-center justify-center'>
-        <div className="w-full grid md:grid-cols-3">
-          {products.map(prod =>
-            <Card key={prod.id} className=" max-w-md">
-              <CardHeader>
-                <CardTitle>
-                  {prod.name} {prod.stock ? `(Qt. ${prod.stock})` : ""}
-                </CardTitle>
-                <CardDescription>
-                  {prod.id}
-
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p>{prod.description}</p>
-                <p>Price: {prod.basePrice} CGST: {prod.cgstTaxRate} SGST: {prod.sgstTaxRate}</p>
-              </CardContent>
-              <CardFooter>
-                {prod.tags.map(tag =>
-                  <Badge className="mr-1">
-                    {tag.name}
-                  </Badge>
-                )}
-              </CardFooter>
-            </Card>
-          )}
-        </div>
+      <div className='min-h-screen flex-grow flex flex-col items-center justify-start'>
+        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+          Order Terminal
+        </h1>
+        <Search products={products}/>
       </div>
     </>
   )
