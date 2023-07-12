@@ -64,6 +64,18 @@ model Product {
   stockEvents StockEvent[]
 
   orderItems OrderItem[]
+
+  tags Tag[] @relation(fields: [tagIds], references: [id])
+  tagIds String[] @db.ObjectId
+}
+
+model Tag {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  name String
+
+  product Product[] @relation(fields: [productIds], references: [id])
+  productIds String[] @db.ObjectId
 }
 
 model StockEvent {

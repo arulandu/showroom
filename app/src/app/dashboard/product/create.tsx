@@ -1,5 +1,23 @@
 "use client"
+import { CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons"
 
+import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/components/ui/use-toast"
 import { Button } from "@/components/ui/button"
 import {
@@ -24,18 +42,24 @@ import { handleChange } from "@/lib/handleChange"
 import { CheckedState } from "@radix-ui/react-checkbox"
 
 import { atom, useAtom } from "jotai"
+import { Tag } from "@prisma/client"
+import { useHydrateAtoms } from "jotai/utils"
+import { useState } from "react"
 
 const nameAtom = atom("")
-const descAtom = atom(undefined)
+const descAtom = atom("")
 const priceAtom = atom("")
-const cgstAtom = atom(undefined)
-const sgstAtom = atom(undefined)
+const cgstAtom = atom("")
+const sgstAtom = atom("")
 const inventoryAtom = atom<CheckedState>(false)
-const stockAtom = atom(undefined)
+const stockAtom = atom("")
+const tagsAtom = atom<Tag[]>([])
+const selectedTagsAtom = atom<Tag[]>([])
 
-export function CreateProduct() {
+export function CreateProduct({ serverTags }: { serverTags: Tag[] }) {
+  useHydrateAtoms([[tagsAtom, serverTags]])
+
   const { toast } = useToast()
-
   const [name, setName] = useAtom(nameAtom)
   const [description, setDescription] = useAtom(descAtom)
   const [basePrice, setPrice] = useAtom(priceAtom)
@@ -43,17 +67,36 @@ export function CreateProduct() {
   const [sgstTaxRate, setSGST] = useAtom(sgstAtom)
   const [inventory, setInventory] = useAtom(inventoryAtom)
   const [stock, setStock] = useAtom(stockAtom)
+  const [tags, setTags] = useAtom(tagsAtom)
+  const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom)
+  const [processing, setProcessing] = useState(false)
 
   const register = async () => {
     try {
-      const product = (await (await fetch('/api/product', {method: "POST", body: JSON.stringify({
-        name,
-        description,
-        basePrice: basePrice ? parseFloat(basePrice) : undefined,
-        cgstTaxRate: cgstTaxRate ? parseFloat(cgstTaxRate) : undefined,
-        sgstTaxRate: sgstTaxRate ? parseFloat(sgstTaxRate) : undefined,
-        stock: stock && inventory ? parseInt(stock): undefined
-      })})).json()).product
+      setProcessing(true)
+      const product = (await (await fetch('/api/product', {
+        method: "POST", body: JSON.stringify({
+          name,
+          description,
+          basePrice: basePrice ? parseFloat(basePrice) : undefined,
+          cgstTaxRate: cgstTaxRate ? parseFloat(cgstTaxRate) : undefined,
+          sgstTaxRate: sgstTaxRate ? parseFloat(sgstTaxRate) : undefined,
+          stock: stock && inventory ? parseInt(stock ? stock : "0") : undefined,
+          tagIds: selectedTags.map(t => t.id)
+        })
+      })).json()).product
+
+      setProcessing(false)
+      
+      // TODO: better reset
+      setName("")
+      setDescription("")
+      setPrice("")
+      setCGST("")
+      setSGST("")
+      setInventory(false)
+      setStock("")
+      setSelectedTags([])
 
       toast({
         title: "Created",
@@ -63,7 +106,7 @@ export function CreateProduct() {
       toast({
         title: "Error"
       })
-    }    
+    }
   }
 
   return (
@@ -82,6 +125,9 @@ export function CreateProduct() {
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="description">Description</Label>
               <Input id="description" placeholder="Add relevant details here" value={description} onChange={handleChange(setDescription)} />
+            </div>
+            <div className="space-y-1.5">
+              <TagFilter title="Tag" options={tags.map(t => { return { label: t.name, value: t }; })} />
             </div>
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="price">Base Price</Label>
@@ -119,8 +165,161 @@ export function CreateProduct() {
         </form>
       </CardContent>
       <CardFooter className="">
-        <Button onClick={(e) => register()}>Register</Button>
+        <Button disabled={processing} onClick={(e) => register()}>Register</Button>
       </CardFooter>
     </Card>
+  )
+}
+
+interface TagFilter {
+  title?: string
+  options: {
+    label: string
+    value: Tag
+    icon?: React.ComponentType<{ className?: string }>
+  }[]
+}
+
+
+const tagSearchAtom = atom("")
+export function TagFilter({
+  title,
+
+}: TagFilter) {
+  const { toast } = useToast()
+  const [tags, setTags] = useAtom(tagsAtom)
+  const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom)
+  const [tagSearch, setTagSearch] = useAtom(tagSearchAtom)
+  const selectedSet = new Set(selectedTags)
+
+  const createTag = async () => {
+    try {
+      const tag = (await (await fetch('/api/tag', {
+        method: "POST", body: JSON.stringify({
+          name: tagSearch,
+        })
+      })).json()).tag
+        
+      setTags([...tags, tag])
+      selectTag(tag)
+
+      toast({
+        title: "Created",
+        description: `"${tag.name}" is now a valid tag!`,
+      })
+    } catch {
+      toast({
+        title: "Error"
+      })
+    }
+  }
+
+  const selectTag = (tag: Tag) => {
+    console.log("selected", tag.name, tag.id)
+    if (selectedSet.has(tag)) {
+      selectedSet.delete(tag)
+    } else {
+      selectedSet.add(tag)
+    }
+
+    setSelectedTags(Array.from(selectedSet))
+  }
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" size="sm" className="h-8 border-dashed">
+          <PlusCircledIcon className="mr-2 h-4 w-4" />
+          {title}
+          {selectedSet?.size > 0 && (
+            <>
+              <Separator orientation="vertical" className="mx-2 h-4" />
+              <Badge
+                variant="secondary"
+                className="rounded-sm px-1 font-normal lg:hidden"
+              >
+                {selectedSet.size}
+              </Badge>
+              <div className="hidden space-x-1 lg:flex">
+                {selectedSet.size > 2 ? (
+                  <Badge
+                    variant="secondary"
+                    className="rounded-sm px-1 font-normal"
+                  >
+                    {selectedSet.size} selected
+                  </Badge>
+                ) : (
+                  tags
+                    .filter((tag) => selectedSet.has(tag))
+                    .map((tag) => (
+                      <Badge
+                        variant="secondary"
+                        key={tag.id}
+                        className="rounded-sm px-1 font-normal"
+                      >
+                        {tag.name}
+                      </Badge>
+                    ))
+                )}
+              </div>
+            </>
+          )}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[200px] p-0" align="start">
+        <Command>
+          <CommandInput placeholder={title} onValueChange={(s) => setTagSearch(s)}/>
+          <CommandList>
+            <CommandEmpty>
+              <Button onClick={() => createTag()}>Create tag</Button>
+            </CommandEmpty>
+            <CommandGroup>
+              {tags.map((tag) => {
+                const isSelected = selectedSet.has(tag)
+                return (
+                  <CommandItem
+                    key={tag.id}
+                    onSelect={() => selectTag(tag)}
+                  >
+                    <div
+                      className={cn(
+                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                        isSelected
+                          ? "bg-primary text-primary-foreground"
+                          : "opacity-50 [&_svg]:invisible"
+                      )}
+                    >
+                      <CheckIcon className={cn("h-4 w-4")} />
+                    </div>
+                    <span>{tag.name}</span>
+                    {/*
+                    TODO: counts for the filters
+                    {facets?.get(option.value) && (
+                      <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
+                        {facets.get(option.value)}
+                      </span>
+                    )}
+                    */}
+                  </CommandItem>
+                )
+              })}
+            </CommandGroup>
+            {selectedSet.size > 0 && (
+              <>
+                <CommandSeparator />
+                <CommandGroup>
+                  <CommandItem
+                    onSelect={() => console.log("clear filters")}
+                    className="justify-center text-center"
+                  >
+                    Clear filters
+                  </CommandItem>
+                </CommandGroup>
+              </>
+            )}
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   )
 }
