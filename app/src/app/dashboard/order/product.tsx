@@ -4,12 +4,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input";
 import { Product } from "@prisma/client";
-import { atom, useAtom } from "jotai";
+import { PrimitiveAtom, atom, useAtom } from "jotai";
 import { MinusIcon, PlusIcon, ShoppingBagIcon } from "lucide-react";
 import { useState } from "react";
+import { OrderItem, cartAtom } from "./store";
 
 export default function Product({ product }: { product: any }) {
-  const [bag, setBag] = useState<number|undefined>(undefined) // TODO: make this do acc bag stuff
+  let [cart, setCart] = useAtom(cartAtom)
+  const bag = cart[product.id]?.quantity
+
+  const setBag = (quantity: number) => {
+    setCart({...cart, [product.id]: {quantity, product}})
+  }
 
   return (
     <Card key={product.id} className="max-w-md">
@@ -32,7 +38,7 @@ export default function Product({ product }: { product: any }) {
         <p>{product.description}</p>
         <p>Price: {product.basePrice} CGST: {product.cgstTaxRate} SGST: {product.sgstTaxRate}</p>
         <div className="mt-4 w-fit flex items-center">
-          {bag === undefined ?
+          {bag === undefined?
             <Button variant="secondary" className="" onClick={() => setBag(1)}>
               {"Buy "}<ShoppingBagIcon className="ml-1 w-4 h-4" />
             </Button>
