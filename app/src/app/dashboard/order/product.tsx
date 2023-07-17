@@ -14,11 +14,14 @@ export default function Product({ product }: { product: any }) {
   const bag = cart[product.id]?.quantity
 
   const setBag = (quantity: number) => {
-    setCart({...cart, [product.id]: {quantity, product}})
+    const c = {...cart}
+    if(quantity == 0) delete c[product.id]
+    else c[product.id] = {quantity, product}
+    setCart(c)
   }
 
   return (
-    <Card key={product.id} className="max-w-md">
+    <Card key={product.id} className={`max-w-md ${bag > 0 ? " shadow-yellow-400" : ""}`}>
       <CardHeader className="relative">
         <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
           {product.name} {product.stock ? `(Qt. ${product.stock})` : ""}

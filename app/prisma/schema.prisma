@@ -14,7 +14,7 @@ model Customer {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   
   name String
-  email String
+  email String @unique
   phone String
   address String
   pfp String?
@@ -87,6 +87,10 @@ model StockEvent {
 
   product Product @relation(fields: [productId], references: [id])
   productId String @db.ObjectId
+
+  // CAN'T RELATION UNTIL PARTIAL INDEXING IS SUPPORTED SINCE @unique + optional means only 1 object can have optional
+  // orderItem OrderItem? 
+  orderItemId String? @db.ObjectId
 }
 
 // ORDER
@@ -118,6 +122,10 @@ model OrderItem {
 
   order Order @relation(fields: [orderId], references: [id])
   orderId String @db.ObjectId
+
+  // CAN'T RELATION UNTIL PARTIAL INDEXING IS SUPPORTED SINCE @unique + optional means only 1 object can have optional
+  // stockEvent StockEvent? @relation(fields: [stockEventId], references: [id])
+  stockEventId String? @db.ObjectId
 }
 
 // // PROMOTIONS
