@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "@swc-jotai/react-refresh": "^0.0.8",
+    "encoding": "^0.1.13",
     "prisma": "5"
   }
 }
