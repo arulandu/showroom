@@ -14,20 +14,29 @@ A scalable motorcycle showroom management system for Joven Motors in Tamil Nadu,
 
 Built by [Alvan Caleb Arlandu](https://arulandu.com/).
 
+## Design Requirements
+- [x] Employee
+  - [x] Register new people
+- [x] Products
+  - [x] Register new products
+  - [ ] Record stock events that increase inventory of products for a fixed price
+  - [ ] Set base prices
+- [x] Orders
+  - [x] Store front page. Filter + fuzzy search. 
+  - [x] Checkout summary. Customer creation/linkage. Invoice -> Payment.
+  - [x] Receipt generation + PDF printing.
+- [ ] Customer
+  - [ ] View active invoices. Make payments toward invoices. 
+
 ## TODO
-when employees buy product, it inccurs an expense AND changes the stock in the inventory. 
-businesses have other expenses. 
-orders generate invoices which incurr payment transactions which generate revenue. revenue is a negative expense. 
-orders contain order items which may change stock when sold. 
+Store Page:
+- Condensed product creation. 
+- Product edit.
 
-users might want functionality to see profit from one particular product.
+Customer Page: 
+- Invoice creation.
+- Payment for invoices. 
 
-ProfitDelta {
+Product Page: (delete, now in store)
 
-}
-
-employees:
-order flow -> create orders. print receipts.
-account flow -> account lookup. invoices etc. 
-inventory flow -> view inventory. stock inventory.
-product flow -> set prices etc.
+Employee Page: (rename -> manager page)

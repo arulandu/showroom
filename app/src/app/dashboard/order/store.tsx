@@ -6,10 +6,15 @@ import { Input } from "@/components/ui/input"
 import { handleChange } from "@/lib/handleChange"
 import { useMemo } from "react"
 import { Button } from "@/components/ui/button"
-import { ShoppingCartIcon } from "lucide-react"
+import { PlusCircleIcon, ShoppingCartIcon } from "lucide-react"
 import Link from "next/link"
-import { Product as ProductType } from "@prisma/client"
+import { Product as ProductType, Tag } from "@prisma/client"
 import { atomWithStorage } from "jotai/utils"
+import { Card } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog"
+import { DialogDescription, DialogTitle, DialogTrigger } from "@radix-ui/react-dialog"
+import { Label } from "@/components/ui/label"
+import { CreateProduct } from "./create"
 
 export type OrderItem = {
   product: ProductType
@@ -19,7 +24,7 @@ export type OrderItem = {
 export const cartAtom = atomWithStorage<any>("cart", {})
 
 const searchAtom = atom("")
-export default function Store({ products }: { products: [ProductType] }) {
+export default function Store({ products, tags }: { products: ProductType[], tags: Tag[] }) {
   const [cart] = useAtom(cartAtom)
   const canCheckout = Object.keys(cart).length > 0
   const [search, setSearch] = useAtom(searchAtom)
@@ -40,7 +45,7 @@ export default function Store({ products }: { products: [ProductType] }) {
     <div className="mt-8 w-full">
       <div className="flex">
         <Input id="search" placeholder="Search for products..." onChange={handleChange(setSearch)} />
-        
+
         <Link href="/dashboard/order/checkout" className={`${canCheckout ? "" : "pointer-events-none"}`} aria-disabled={!canCheckout}>
           <Button variant="default" disabled={!canCheckout} className="ml-2">
             Checkout <ShoppingCartIcon className="ml-1 w-4 h-4" />
@@ -49,6 +54,7 @@ export default function Store({ products }: { products: [ProductType] }) {
       </div>
 
       <div className="mt-4 w-full grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <CreateProduct serverTags={tags}/>
         {searchProducts.map((prod: any) => <Product key={prod.id} product={prod} />)}
       </div>
     </div>

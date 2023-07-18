@@ -2,7 +2,7 @@
 
 import { signIn, signOut, useSession } from "next-auth/react"
 import Link from "next/link"
-import {useAtom} from "jotai"
+import { useAtom } from "jotai"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -18,17 +18,12 @@ import { Cog, Cog as CogIcon } from "lucide-react"
 import { ComponentPropsWithoutRef, ElementRef, forwardRef, useEffect } from "react"
 import { Session } from "inspector"
 import { sessionAtom } from "@/app/session"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export function Navigation() {
   const [session] = useAtom(sessionAtom)
 
   const components: { title: string; href: string; description: string }[] = [
-    {
-      title: "Customer",
-      href: "/dashboard/customer",
-      description:
-        "Customer search. View customer order history and pending invoices.",
-    },
     {
       title: "Order",
       href: "/dashboard/order",
@@ -36,10 +31,10 @@ export function Navigation() {
         "Create orders and print reciepts. Automatically compute cGST+sGST taxes.",
     },
     {
-      title: "Product",
-      href: "/dashboard/product",
+      title: "Customer",
+      href: "/dashboard/customer",
       description:
-        "View products. Set prices. Stock inventory.",
+        "Customer search. View customer order history and pending invoices.",
     },
     ... (session?.user.admin ? [{
       title: "Employee",
@@ -47,7 +42,7 @@ export function Navigation() {
       description: "Create, manage, and view actions of employees."
     }] : [])
   ]
-  
+
   return (
     <div className="flex z-10 bg-opacity-25">
       <Button variant="link" className="pl-0" asChild>
@@ -79,15 +74,23 @@ export function Navigation() {
           }
         </NavigationMenuList>
       </NavigationMenu>
-      {session ?
-        <Button variant="default" className="ml-auto mr-0" onClick={() => signOut({callbackUrl: "/"})}>
-          Log Out
-        </Button>
-        :
-        <Button variant="default" className="ml-auto mr-0" onClick={() => signIn("google", {callbackUrl: window.location.pathname === "/404" ? "/" : window.location.pathname})}>
-          Login {"->"}
-        </Button>
-      }
+      <div className="flex ml-auto mr-0">
+        {session ?
+          <>
+            <Button variant="default" onClick={() => signOut({ callbackUrl: "/" })}>
+              Log Out
+            </Button>
+            <Avatar className="ml-2">
+              <AvatarImage src={session.user.pfp ? session.user.pfp : undefined} referrerPolicy="no-referrer" alt={session.user.name} />
+              <AvatarFallback>ACA</AvatarFallback>
+            </Avatar>
+          </>
+          :
+          <Button variant="default" onClick={() => signIn("google", { callbackUrl: window.location.pathname === "/404" ? "/" : window.location.pathname })}>
+            Login {"->"}
+          </Button>
+        }
+      </div>
     </div>
   )
 }

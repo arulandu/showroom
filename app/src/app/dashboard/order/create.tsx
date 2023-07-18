@@ -45,6 +45,9 @@ import { atom, useAtom } from "jotai"
 import { Tag } from "@prisma/client"
 import { useHydrateAtoms } from "jotai/utils"
 import { useState } from "react"
+import { Dialog, DialogTrigger, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogContent } from "@/components/ui/dialog"
+import { PlusCircleIcon } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 const nameAtom = atom("")
 const descAtom = atom("")
@@ -55,11 +58,14 @@ const inventoryAtom = atom<CheckedState>(false)
 const stockAtom = atom("")
 const tagsAtom = atom<Tag[]>([])
 const selectedTagsAtom = atom<Tag[]>([])
+const openAtom = atom(false)
 
 export function CreateProduct({ serverTags }: { serverTags: Tag[] }) {
   useHydrateAtoms([[tagsAtom, serverTags]])
 
   const { toast } = useToast()
+  const router = useRouter()
+  const [open, setOpen] = useAtom(openAtom)
   const [name, setName] = useAtom(nameAtom)
   const [description, setDescription] = useAtom(descAtom)
   const [basePrice, setPrice] = useAtom(priceAtom)
@@ -87,7 +93,7 @@ export function CreateProduct({ serverTags }: { serverTags: Tag[] }) {
       })).json()).product
 
       setProcessing(false)
-      
+
       // TODO: better reset
       setName("")
       setDescription("")
@@ -102,6 +108,9 @@ export function CreateProduct({ serverTags }: { serverTags: Tag[] }) {
         title: "Created",
         description: JSON.stringify(product),
       })
+      
+      setOpen(false)
+      router.refresh()
     } catch {
       toast({
         title: "Error"
@@ -110,64 +119,68 @@ export function CreateProduct({ serverTags }: { serverTags: Tag[] }) {
   }
 
   return (
-    <Card className="w-80">
-      <CardHeader>
-        <CardTitle>Create product</CardTitle>
-        <CardDescription>Adds a new service, tool, motorcycle, etc. to the showroom database.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form>
-          <div className="grid w-full items-center gap-4">
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" placeholder="Name of the product" value={name} onChange={handleChange(setName)} />
-            </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="description">Description</Label>
-              <Input id="description" placeholder="Add relevant details here" value={description} onChange={handleChange(setDescription)} />
-            </div>
-            <div className="space-y-1.5">
-              <TagFilter title="Tag" options={tags.map(t => { return { label: t.name, value: t }; })} />
-            </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="price">Base Price</Label>
-              <Input id="price" placeholder="MSRP / On Road Price in ₹" value={basePrice} onChange={handleChange(setPrice)} />
-            </div>
-            <div className="space-y-1.5">
-              <div className="flex items-center">
-                <div className="flex flex-col mr-1">
-                  <Label htmlFor="cgst">CGST Tax</Label>
-                  <Input id="cgst" placeholder="ex. 9% -> 0.09" value={cgstTaxRate} onChange={handleChange(setCGST)} />
-                </div>
-                <div className="ml-1 flex flex-col">
-                  <Label htmlFor="SGST">SGST Tax</Label>
-                  <Input id="SGST" placeholder="ex. 9% -> 0.09" value={sgstTaxRate} onChange={handleChange(setSGST)} />
-                </div>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="secondary" className=" h-full max-w-md flex items-center justify-center">
+          <PlusCircleIcon className="w-8 h-8 text-secondary-foreground opacity-50" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create product</DialogTitle>
+          <DialogDescription>Adds a new service, tool, motorcycle, etc. to the showroom database.</DialogDescription>
+        </DialogHeader>
+        <div className="grid w-full items-center gap-4">
+          <div className="flex flex-col space-y-1.5">
+            <Label htmlFor="name">Name</Label>
+            <Input id="name" placeholder="Name of the product" value={name} onChange={handleChange(setName)} />
+          </div>
+          <div className="flex flex-col space-y-1.5">
+            <Label htmlFor="description">Description</Label>
+            <Input id="description" placeholder="Add relevant details here" value={description} onChange={handleChange(setDescription)} />
+          </div>
+          <div className="space-y-1.5">
+            <TagFilter title="Tag" options={tags.map(t => { return { label: t.name, value: t }; })} />
+          </div>
+          <div className="flex flex-col space-y-1.5">
+            <Label htmlFor="price">Base Price</Label>
+            <Input id="price" placeholder="MSRP / On Road Price in ₹" value={basePrice} onChange={handleChange(setPrice)} />
+          </div>
+          <div className="space-y-1.5">
+            <div className="flex items-center">
+              <div className="flex flex-col mr-1">
+                <Label htmlFor="cgst">CGST Tax</Label>
+                <Input id="cgst" placeholder="ex. 9% -> 0.09" value={cgstTaxRate} onChange={handleChange(setCGST)} />
               </div>
-            </div>
-
-            <div className="flex items-center space-y-1.5">
-              <div className="flex items-center justify-center ">
-                <Checkbox id="stock" checked={inventory} onCheckedChange={setInventory} />
-                <label
-                  htmlFor="stock"
-                  className="ml-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Does the item have inventory?
-                </label>
+              <div className="ml-1 flex flex-col">
+                <Label htmlFor="SGST">SGST Tax</Label>
+                <Input id="SGST" placeholder="ex. 9% -> 0.09" value={sgstTaxRate} onChange={handleChange(setSGST)} />
               </div>
-            </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="stock">Stock</Label>
-              <Input id="stock" disabled={inventory === true ? false : true} placeholder="Current inventory count" value={stock} onChange={handleChange(setStock)} />
             </div>
           </div>
-        </form>
-      </CardContent>
-      <CardFooter className="">
-        <Button disabled={processing} onClick={(e) => register()}>Register</Button>
-      </CardFooter>
-    </Card>
+
+          <div className="flex items-center space-y-1.5">
+            <div className="flex items-center justify-center ">
+              <Checkbox id="stock" checked={inventory} onCheckedChange={setInventory} />
+              <label
+                htmlFor="stock"
+                className="ml-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Does the item have inventory?
+              </label>
+            </div>
+          </div>
+          <div className="flex flex-col space-y-1.5">
+            <Label htmlFor="stock">Stock</Label>
+            <Input id="stock" disabled={inventory === true ? false : true} placeholder="Current inventory count" value={stock} onChange={handleChange(setStock)} />
+          </div>
+        </div>
+        <DialogFooter className="">
+          <Button disabled={processing} onClick={(e) => register()} type="submit">Create</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+
   )
 }
 
@@ -199,7 +212,7 @@ export function TagFilter({
           name: tagSearch,
         })
       })).json()).tag
-        
+
       setTags([...tags, tag])
       selectTag(tag)
 
@@ -272,7 +285,7 @@ export function TagFilter({
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">
         <Command>
-          <CommandInput placeholder={title} onValueChange={(s) => setTagSearch(s)}/>
+          <CommandInput placeholder={title} onValueChange={(s) => setTagSearch(s)} />
           <CommandList>
             <CommandEmpty>
               <Button onClick={() => createTag()}>Create tag</Button>

@@ -4,8 +4,8 @@ import { NextApiRequest } from 'next'
 import { getServerSession } from 'next-auth'
 import { getToken } from 'next-auth/jwt'
 import { NextRequest, NextResponse } from 'next/server'
-import { payInvoice } from '../invoice/route'
 import { stock } from '../product/stock/route'
+import { payInvoice } from '../invoice'
 
 const toMap = (arr: any[], key: string) => {
   return Object.fromEntries(arr.map(a => [a[key], a]))
@@ -46,6 +46,8 @@ export async function POST(req: NextRequest) {
             productId: p.id,
             quantity: cartMap[p.id].quantity,
             price: cartMap[p.id].price,
+            cgstTaxRate: p.cgstTaxRate,
+            sgstTaxRate: p.sgstTaxRate
           }
         })
       },

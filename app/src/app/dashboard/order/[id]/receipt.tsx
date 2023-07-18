@@ -21,6 +21,7 @@ export const Receipt = ({ order }: { order: any }) => {
       <Page size="A4" style={{ margin: 10 }}>
         <View>
           <Text style={{textDecoration: "underline"}}>Metadata</Text>
+          <Text>Date: {order.createdAt.toISOString()}</Text>
           <Text>Order Id: {order.id}</Text>
           <Text>Showroom Agent: {order.employee.name}</Text>
           <Text>Customer: {order.customer.name} | {order.customer.email}</Text>
@@ -28,7 +29,7 @@ export const Receipt = ({ order }: { order: any }) => {
         <View>
           <Text style={{ textDecoration: 'underline', marginTop: 10 }}>Items</Text>
           {order.items.map((item: any) =>
-            <Text>{item.quantity}x | {item.price} r.s. (cgst: {item.product.cgstTaxRate}, sgst: {item.product.sgstTaxRate})</Text>
+            <Text key={item.id}>{item.quantity}x | {item.price} r.s. (cgst: {item.product.cgstTaxRate}, sgst: {item.product.sgstTaxRate})</Text>
           )}
         </View>
         <View>
