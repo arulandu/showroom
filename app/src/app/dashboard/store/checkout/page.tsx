@@ -84,8 +84,9 @@ export default function Checkout() {
         notes
       })})).json()
       if(!res.order.id) throw Error()
-
-      router.push(`/dashboard/order/${res.order.id}`)
+      
+      setCart({}) // clear cart
+      router.push(`/dashboard/store/${res.order.id}`)
       toast({title: "Created order."})
     } catch (e) {
       toast({title: "Error"})
@@ -96,7 +97,7 @@ export default function Checkout() {
     <>
       <div className='min-h-screen flex-grow flex flex-col items-center justify-start'>
         <div className="w-full my-4">
-          <Button variant="secondary" asChild><Link href="/dashboard/order">{"<-"} Store</Link></Button>
+          <Button variant="secondary" asChild><Link href="/dashboard/store">{"<-"} Store</Link></Button>
           <Table className="mt-2 mx-auto max-w-3xl text-muted-foreground">
             {/* <TableCaption>A summary of the items in your cart.</TableCaption> */}
             <TableHeader className=" bg-primary-foreground">

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { PlusCircleIcon, ShoppingCartIcon } from "lucide-react"
 import Link from "next/link"
 import { Product as ProductType, Tag } from "@prisma/client"
-import { atomWithStorage } from "jotai/utils"
+import { atomWithStorage, useHydrateAtoms } from "jotai/utils"
 import { Card } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog"
 import { DialogDescription, DialogTitle, DialogTrigger } from "@radix-ui/react-dialog"
@@ -23,8 +23,11 @@ export type OrderItem = {
 
 export const cartAtom = atomWithStorage<any>("cart", {})
 
+export const tagsAtom = atom<Tag[]>([])
 const searchAtom = atom("")
 export default function Store({ products, tags }: { products: ProductType[], tags: Tag[] }) {
+  useHydrateAtoms([[tagsAtom, tags]])
+
   const [cart] = useAtom(cartAtom)
   const canCheckout = Object.keys(cart).length > 0
   const [search, setSearch] = useAtom(searchAtom)
@@ -46,7 +49,7 @@ export default function Store({ products, tags }: { products: ProductType[], tag
       <div className="flex">
         <Input id="search" placeholder="Search for products..." onChange={handleChange(setSearch)} />
 
-        <Link href="/dashboard/order/checkout" className={`${canCheckout ? "" : "pointer-events-none"}`} aria-disabled={!canCheckout}>
+        <Link href="/dashboard/store/checkout" className={`${canCheckout ? "" : "pointer-events-none"}`} aria-disabled={!canCheckout}>
           <Button variant="default" disabled={!canCheckout} className="ml-2">
             Checkout <ShoppingCartIcon className="ml-1 w-4 h-4" />
           </Button>

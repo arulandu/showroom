@@ -19,8 +19,8 @@ Built by [Alvan Caleb Arlandu](https://arulandu.com/).
   - [x] Register new people
 - [x] Products
   - [x] Register new products
-  - [ ] Record stock events that increase inventory of products for a fixed price
-  - [ ] Set base prices
+  - [x] Record stock events that increase inventory of products for a fixed price
+  - [x] Set base prices
 - [x] Orders
   - [x] Store front page. Filter + fuzzy search. 
   - [x] Checkout summary. Customer creation/linkage. Invoice -> Payment.
@@ -32,6 +32,7 @@ Built by [Alvan Caleb Arlandu](https://arulandu.com/).
 Store Page:
 - Condensed product creation. 
 - Product edit.
+- Stock
 
 Customer Page: 
 - Invoice creation.

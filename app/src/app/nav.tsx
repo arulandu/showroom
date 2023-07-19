@@ -25,10 +25,10 @@ export function Navigation() {
 
   const components: { title: string; href: string; description: string }[] = [
     {
-      title: "Order",
-      href: "/dashboard/order",
+      title: "Store",
+      href: "/dashboard/store",
       description:
-        "Create orders and print reciepts. Automatically compute cGST+sGST taxes.",
+        "Process orders. Manage product details and inventory.",
     },
     {
       title: "Customer",
@@ -38,7 +38,7 @@ export function Navigation() {
     },
     ... (session?.user.admin ? [{
       title: "Employee",
-      href: "/dashboard/employee",
+      href: "/dashboard/admin",
       description: "Create, manage, and view actions of employees."
     }] : [])
   ]

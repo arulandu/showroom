@@ -1,7 +1,7 @@
 import { db } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
 
-export const stock = async (delta: number, price: number, productId: string, orderItemId?: string) => {
+export const stock = async (delta: number, price: number, productId: string, orderItemId?: string | undefined) => {
   const event = await db.stockEvent.create({
     data: {
       delta,
@@ -22,19 +22,8 @@ export const stock = async (delta: number, price: number, productId: string, ord
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
-  const product = await db.product.create({
-    data: {
-      name: body.name,
-      description: body.description,
-      basePrice: body.basePrice,
-      cgstTaxRate: body.cgstTaxRate,
-      sgstTaxRate: body.sgstTaxRate,
-      stock: body.stock,
-      tags: {
-        connect: body.tagIds.map((id: string) => {return {id}})
-      }
-    }
-  })
+
+  const stockEvent = await stock(body.delta, body.price, body.productId, body.orderItemId)
   
-  return NextResponse.json({product})
+  return NextResponse.json({stockEvent})
 }

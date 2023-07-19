@@ -48,6 +48,7 @@ import { useState } from "react"
 import { Dialog, DialogTrigger, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogContent } from "@/components/ui/dialog"
 import { PlusCircleIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { tagsAtom } from "./store"
 
 const nameAtom = atom("")
 const descAtom = atom("")
@@ -56,13 +57,10 @@ const cgstAtom = atom("")
 const sgstAtom = atom("")
 const inventoryAtom = atom<CheckedState>(false)
 const stockAtom = atom("")
-const tagsAtom = atom<Tag[]>([])
 const selectedTagsAtom = atom<Tag[]>([])
 const openAtom = atom(false)
 
 export function CreateProduct({ serverTags }: { serverTags: Tag[] }) {
-  useHydrateAtoms([[tagsAtom, serverTags]])
-
   const { toast } = useToast()
   const router = useRouter()
   const [open, setOpen] = useAtom(openAtom)

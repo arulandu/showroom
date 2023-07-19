@@ -1,5 +1,26 @@
 import { db } from '@/lib/db'
+import { getSession } from '@/lib/session'
 import { NextRequest, NextResponse } from 'next/server'
+
+export async function PUT(req: NextRequest) {
+  const session = await getSession()
+  const body = await req.json()
+  const product = await db.product.update({
+    where: {id: body.productId},
+    data: {
+      name: body.name,
+      description: body.description,
+      basePrice: body.basePrice,
+      cgstTaxRate: body.cgstTaxRate,
+      sgstTaxRate: body.sgstTaxRate,
+      stock: session.user.admin ? body.stock : undefined,
+      tags: {
+        set: body.tagIds.map((id: string) => {return { id }})
+      }
+    }
+  })
+  return NextResponse.json({product})
+}
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
