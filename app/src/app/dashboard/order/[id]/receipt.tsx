@@ -20,8 +20,8 @@ export const Receipt = ({ order }: { order: any }) => {
     <Document title={`order_${order.id}`} style={styles.document}>
       <Page size="A4" style={{ margin: 10 }}>
         <View>
-          <Text style={{textDecoration: "underline"}}>Metadata</Text>
-          <Text>Date: {order.createdAt.toISOString()}</Text>
+          <Text style={{ textDecoration: "underline" }}>Metadata</Text>
+          <Text>Date: {order.createdAt.toLocaleString()}</Text>
           <Text>Order Id: {order.id}</Text>
           <Text>Showroom Agent: {order.employee.name}</Text>
           <Text>Customer: {order.customer.name} | {order.customer.email}</Text>
@@ -29,13 +29,16 @@ export const Receipt = ({ order }: { order: any }) => {
         <View>
           <Text style={{ textDecoration: 'underline', marginTop: 10 }}>Items</Text>
           {order.items.map((item: any) =>
-            <Text key={item.id}>{item.quantity}x | {item.price} r.s. (cgst: {item.product.cgstTaxRate}, sgst: {item.product.sgstTaxRate})</Text>
+            <Text key={item.id}>{item.quantity}x | {item.price.toFixed(2)} r.s. (cgst: {item.product.cgstTaxRate * 100}%, sgst: {item.product.sgstTaxRate * 100}%)</Text>
           )}
         </View>
         <View>
           <Text style={{ textDecoration: 'underline', marginTop: 10 }}>Summary</Text>
-          <Text>Total Amount Owed: {order.invoice.amount}</Text>
-          <Text>Amount Paid: {order.invoice.amountPaid}</Text>
+          <Text>Total Amount Owed: {order.invoice.amount.toFixed(2)}</Text>
+          <Text>Total Amount Paid: {order.invoice.amountPaid.toFixed(2)}</Text>
+          {order.amountOwed > 0 ?
+            <Text style={{ color: "red" }}>Outstanding Amount: {order.amountOwed.toFixed(2)}</Text>
+            : null}
         </View>
       </Page>
     </Document>

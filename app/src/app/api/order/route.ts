@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json()
 
   const cartMap = toMap(body.cart, 'id')
+  
   const products = await db.product.findMany({
     where: {
       id: { in: Object.keys(cartMap) }
@@ -68,7 +69,7 @@ export async function POST(req: NextRequest) {
 
   const stockEvents = await Promise.all(
     order.items.filter(item => productMap[item.productId as string].stock ? true : false).map(async (item) => {
-      const event = await stock(-item.quantity, item.price, item.productId as string, item.id)
+      const event = await stock(-item.quantity, item.price, item.productId as string, session.user.id, item.id)
 
       const orderItem = await db.orderItem.update({
         where: {id: item.id},
@@ -78,10 +79,11 @@ export async function POST(req: NextRequest) {
     })
   )
   
-  const { invoice, payment } = await payInvoice(order.invoice!.id, body.payment.amount, body.payment.method)
+  const { invoice, payment } = await payInvoice(order.invoice!.id, parseFloat(body.payment.amount), body.payment.method)
     
   return NextResponse.json({ order, stockEvents, invoice, payment })
-  } catch {
-    return NextResponse.json({}, {status: 400})
+  } catch(e:any) {
+    
+    return NextResponse.json({error: e.toString()}, {status: 400})
   }
 }

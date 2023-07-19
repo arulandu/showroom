@@ -1,3 +1,4 @@
+"use client"
 import { atom, useAtom } from "jotai"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Icons } from "@/components/ui/icons";
@@ -8,13 +9,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
 
 const fullAtom = atom<CheckedState>(false)
 const amountAtom = atom<number | undefined>(undefined)
 const methodAtom = atom("CASH")
 export const paymentAtom = atom((get) => { return {amount: get(amountAtom), method: get(methodAtom)}})
 
-export const Payment = ({ total }: { total: number }) => {
+export const Payment = ({ total, className }: { total: number, className?: string }) => {
   const [full, setFull] = useAtom(fullAtom)
   const [amount, setAmount] = useAtom(amountAtom)
   const [method, setMethod] = useAtom(methodAtom)
@@ -25,7 +27,7 @@ export const Payment = ({ total }: { total: number }) => {
   }
 
   return (
-    <Card className="my-2 w-full">
+    <Card className={cn("my-2 w-full", className)}>
       <CardHeader>
         <CardTitle>Payment Method</CardTitle>
         <CardDescription>

@@ -25,19 +25,10 @@ Built by [Alvan Caleb Arlandu](https://arulandu.com/).
   - [x] Store front page. Filter + fuzzy search. 
   - [x] Checkout summary. Customer creation/linkage. Invoice -> Payment.
   - [x] Receipt generation + PDF printing.
-- [ ] Customer
-  - [ ] View active invoices. Make payments toward invoices. 
+- [x] Customer
+  - [x] View active invoices. Make payments toward invoices. 
+- [ ] Admin
+  - [ ] View inventory history for a particular product
+  - [ ]
 
 ## TODO
-Store Page:
-- Condensed product creation. 
-- Product edit.
-- Stock
-
-Customer Page: 
-- Invoice creation.
-- Payment for invoices. 
-
-Product Page: (delete, now in store)
-
-Employee Page: (rename -> manager page)

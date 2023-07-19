@@ -37,9 +37,9 @@ export function Navigation() {
         "Customer search. View customer order history and pending invoices.",
     },
     ... (session?.user.admin ? [{
-      title: "Employee",
+      title: "Admin",
       href: "/dashboard/admin",
-      description: "Create, manage, and view actions of employees."
+      description: "Manage employees. View order history."
     }] : [])
   ]
 

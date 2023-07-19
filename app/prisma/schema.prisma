@@ -36,6 +36,7 @@ model Employee {
   session Session?
 
   orders Order[]
+  stockEvents StockEvent[]
 }
  
 model Session {
@@ -88,6 +89,10 @@ model StockEvent {
 
   product Product @relation(fields: [productId], references: [id])
   productId String @db.ObjectId
+
+  // link to employee if it's a buy action
+  employee Employee? @relation(fields: [employeeId], references: [id])
+  employeeId String? @db.ObjectId
 
   // CAN'T RELATION UNTIL PARTIAL INDEXING IS SUPPORTED SINCE @unique + optional means only 1 object can have optional
   // orderItem OrderItem? 
@@ -164,7 +169,7 @@ model Payment {
   method PaymentMethod
 
   invoice Invoice @relation(fields: [invoiceId], references: [id])
-  invoiceId String @db.ObjectId @unique
+  invoiceId String @db.ObjectId
 }
 
 enum PaymentMethod {

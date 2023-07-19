@@ -86,7 +86,7 @@ export default function Checkout() {
       if(!res.order.id) throw Error()
       
       setCart({}) // clear cart
-      router.push(`/dashboard/store/${res.order.id}`)
+      router.push(`/dashboard/order/${res.order.id}`)
       toast({title: "Created order."})
     } catch (e) {
       toast({title: "Error"})
