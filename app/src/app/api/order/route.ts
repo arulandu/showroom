@@ -4,7 +4,7 @@ import { NextApiRequest } from 'next'
 import { getServerSession } from 'next-auth'
 import { getToken } from 'next-auth/jwt'
 import { NextRequest, NextResponse } from 'next/server'
-import { stock } from '../product/stock/route'
+import { stock } from '../product/stock'
 import { payInvoice } from '../invoice'
 
 const toMap = (arr: any[], key: string) => {
