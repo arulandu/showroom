@@ -30,7 +30,7 @@ export const Receipt = ({ order }: { order: any }) => {
             </View>
 
             <View style={{ textAlign: "center", marginVertical: 10 }}>
-              <Text>{order.createdAt.toLocaleString()}</Text>
+              <Text>{new Date(order.createdAt).toLocaleString()}</Text>
               <Text>Showroom Agent: {order.employee.name}</Text>
               <Text>Customer: {order.customer.name} | {order.customer.email}</Text>
               <Text >Order Id: {order.id}</Text>
