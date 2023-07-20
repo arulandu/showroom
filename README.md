@@ -29,6 +29,6 @@ Built by [Alvan Caleb Arlandu](https://arulandu.com/).
   - [x] View active invoices. Make payments toward invoices. 
 - [ ] Admin
   - [ ] ~~View inventory history for a particular product~~
-  - [ ] View orders. buy actions. query by date range.
+  - [x] View orders. buy actions. query by date range.
 
 ## TODO
