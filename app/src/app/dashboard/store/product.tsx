@@ -55,7 +55,7 @@ export default function Product({ product }: { product: any }) {
   }
 
   return (
-    <Card key={product.id} className={`max-w-md ${bag > 0 ? " border-foreground" : ""}`}>
+    <Card key={product.id} className={`w-full ${bag > 0 ? " border-foreground" : ""}`}>
       <CardHeader className="relative">
         <div className="flex justify-between">
           <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
@@ -89,7 +89,7 @@ export default function Product({ product }: { product: any }) {
                 <MinusIcon className="w-4 h-4" />
               </Button>
               <Input id="quantity" placeholder="#" value={bag} onChange={(e) => setBag(parseInt(e.target.value))} className="mx-2" />
-              <Button variant="secondary" className="w-fit" disabled={product.stock > bag ? false : true} onClick={() => setBag(bag + 1)}>
+              <Button variant="secondary" className="w-fit" disabled={(product.stock == null || product.stock > bag) ? false : true} onClick={() => setBag(bag + 1)}>
                 <PlusIcon className="w-4 h-4" />
               </Button>
             </>

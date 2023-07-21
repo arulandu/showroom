@@ -56,7 +56,7 @@ export default function Store({ products, tags }: { products: ProductType[], tag
         </Link>
       </div>
 
-      <div className="mt-4 w-full grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-4 w-full grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
         <CreateProduct serverTags={tags}/>
         {searchProducts.map((prod: any) => <Product key={prod.id} product={prod} />)}
       </div>

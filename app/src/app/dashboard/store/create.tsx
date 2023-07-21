@@ -119,7 +119,7 @@ export function CreateProduct({ serverTags }: { serverTags: Tag[] }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="secondary" className=" h-full max-w-md flex items-center justify-center">
+        <Button variant="secondary" className=" h-full w-full flex items-center justify-center">
           <PlusCircleIcon className="w-8 h-8 text-secondary-foreground opacity-50" />
         </Button>
       </DialogTrigger>
