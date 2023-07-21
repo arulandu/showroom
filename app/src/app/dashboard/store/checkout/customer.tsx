@@ -27,7 +27,7 @@ export const Customer = () => {
   const search = async () => {
     // search database for user with current field values
     try {
-      const customer = (await (await fetch("/api/customer?=" + new URLSearchParams(fCustomer))).json()).customer
+      const customer = (await (await fetch("/api/customer?" + new URLSearchParams(fCustomer))).json()).customer
       if (!customer) throw Error()
       setCustomer(customer)
       setName(customer.name)

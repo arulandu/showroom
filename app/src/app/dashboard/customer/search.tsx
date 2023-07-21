@@ -8,22 +8,24 @@ import { handleChange } from "@/lib/handleChange"
 import { atom, useAtom } from "jotai"
 import { CheckCheckIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
-
-export const customerAtom = atom<any>(null)
-const emailAtom = atom("")
+import { useState } from "react"
 
 export const CustomerSearch = () => {
   const { toast } = useToast()
   const router = useRouter()
-  const [email, setEmail] = useAtom(emailAtom)
-  const [customer, setCustomer] = useAtom(customerAtom)
+  const [email, setEmail] = useState("")
+  const [processing, setProcessing] = useState(false)
 
   const search = async () => {
     // search database for user with current field values
     try {
-      const customer = (await (await fetch("/api/customer?=" + new URLSearchParams({email}))).json()).customer
+      setProcessing(true)
+      
+      const customer = (await (await fetch("/api/customer?" + new URLSearchParams({email}))).json()).customer
       if (!customer) throw Error()
-      setCustomer(customer)
+
+      setProcessing(false)
+
       toast({ title: "Found customer." })
       router.push(`/dashboard/customer/${customer.id}`)
     } catch {
@@ -34,7 +36,7 @@ export const CustomerSearch = () => {
   return (
     <Card className="my-2 max-w-3xl">
       <CardHeader>
-        <CardTitle>Customer <CheckCheckIcon className={`${customer ? "inline" : "hidden"} text-green-400`} /></CardTitle>
+        <CardTitle>Customer</CardTitle>
         <CardDescription>View details for a returning customer.</CardDescription>
       </CardHeader>
       <CardContent>
@@ -44,7 +46,7 @@ export const CustomerSearch = () => {
               <Label htmlFor="email">Email</Label>
               <Input id="email" placeholder="employee@gmail.com" value={email} onChange={handleChange(setEmail)} />
             </div>
-            <Button variant="secondary" disabled={customer ? true : false} onClick={(e) => {e.preventDefault(); search()}} className="flex-grow">Search</Button>
+            <Button variant="secondary" disabled={processing ? true : false} onClick={(e) => {e.preventDefault(); search()}} className="flex-grow">Search</Button>
           </div>
         </form>
       </CardContent >
