@@ -36,7 +36,7 @@ const ActionsMenu = ({ product }: { product: any }) => {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <EditProduct product={product} onClose={() => setOpen(false)} />
-        <StockProduct product={product} onClose={() => setOpen(false)} />
+        {product.stock == null ? null : <StockProduct product={product} onClose={() => setOpen(false)} />}
       </DropdownMenuContent>
     </DropdownMenu>
   );

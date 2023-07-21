@@ -69,7 +69,7 @@ export function StockProduct({ product, onClose }: { product: Product, onClose: 
     try {
       setProcessing(true)
       const stockEvent = (await (await fetch('/api/product/stock', {
-        method: "POST", 
+        method: "PUT", 
         body: JSON.stringify({
           productId: product.id,
           price: parseFloat(price),
