@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Product } from "@prisma/client";
 import { PrimitiveAtom, atom, useAtom } from "jotai";
-import { ClipboardCopyIcon, MinusIcon, MoreHorizontalIcon, PlusIcon, ShoppingBagIcon } from "lucide-react";
+import { ClipboardCopyIcon, MinusIcon, MoreHorizontalIcon, PlusIcon, ShoppingBagIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import { OrderItem, cartAtom } from "./store";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
@@ -13,11 +13,25 @@ import { sessionAtom } from "@/app/session";
 import { useToast } from "@/components/ui/use-toast";
 import { EditProduct } from "./edit";
 import { StockProduct } from "./stock";
+import { useRouter } from "next/navigation";
 
 const ActionsMenu = ({ product }: { product: any }) => {
   const { toast } = useToast()
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [session] = useAtom(sessionAtom)
+
+  const deleteItem = async () => {
+    try {
+      const res = await fetch("/api/product?" + new URLSearchParams({id: product.id}), {method: "DELETE"})
+      if(!res.ok) throw Error("delete failed")
+
+      toast({title: "Deleted."})
+      router.refresh()
+    } catch {
+      toast({title: "Delete failed.", description: "Product has already been used in orders / stock events. Only unused products are delete-able."})
+    }
+  }
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -37,6 +51,7 @@ const ActionsMenu = ({ product }: { product: any }) => {
         <DropdownMenuSeparator />
         <EditProduct product={product} onClose={() => setOpen(false)} />
         {product.stock == null ? null : <StockProduct product={product} onClose={() => setOpen(false)} />}
+        <DropdownMenuItem onClick={deleteItem} className="text-destructive focus:text-destructive"><TrashIcon className=" w-4 mr-2"/>Delete Item</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
