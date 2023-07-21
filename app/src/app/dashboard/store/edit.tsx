@@ -78,7 +78,7 @@ export function EditProduct({ product, onClose }: { product: Product, onClose: (
   const [basePrice, setPrice] = useState(product.basePrice.toString())
   const [cgstTaxRate, setCGST] = useState(product.cgstTaxRate.toString())
   const [sgstTaxRate, setSGST] = useState(product.sgstTaxRate.toString())
-  const [inventory, setInventory] = useState(product.stock == null ? false : true)
+  const [inventory, setInventory] = useState<CheckedState>(product.stock == null ? false : true)
   const [stock, setStock] = useState(product.stock == null ? "" : product.stock.toString())
   const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom)
   const [processing, setProcessing] = useState(false)
