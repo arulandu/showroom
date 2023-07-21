@@ -20,12 +20,12 @@ Font.register({
 
 export const Receipt = ({ order }: { order: any }) => {
   const Doc = () => (
-    <Document title={`order_${order.id}`} style={{fontFamily: "Custom"}}>
+    <Document title={`order_${order.id}`} style={{ fontFamily: "Custom" }}>
       <Page size="A4">
         <View style={{ padding: 20 }}>
           <View>
             <View style={{ textAlign: "center" }}>
-              <Text style={{ fontWeight: "bold"}}>Joven Motors</Text>
+              <Text style={{ fontWeight: "bold" }}>Joven Motors</Text>
               <Text>VJ37+8V4, road, Madurai Main, Kalayarkoil, Tamil Nadu 630551, India</Text>
             </View>
 
@@ -49,9 +49,7 @@ export const Receipt = ({ order }: { order: any }) => {
                 order.invoice.payments.map((payment: any) => <Text key={payment.id}>* {payment.method} ₹{payment.amount.toFixed(2)}</Text>)
               }
             </View>
-            {order.amountOwed > 0 ?
-              <Text style={{ fontWeight: "bold" }}>Outstanding Amount: ₹{order.amountOwed.toFixed(2)}</Text>
-              : null}
+            <Text style={{ fontWeight: order.amountOwed > 0 ? "bold" : "normal" }}>Outstanding Amount: ₹{order.amountOwed.toFixed(2)}</Text>
           </View>
         </View>
 
