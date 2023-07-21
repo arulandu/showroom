@@ -96,7 +96,7 @@ export default function Product({ product }: { product: any }) {
         <div className="mt-4 w-fit flex items-center">
           {bag === undefined ?
             <Button variant="secondary" className="" onClick={() => setBag(1)}>
-              {"Buy "}<ShoppingBagIcon className="ml-1 w-4 h-4" />
+              Add to cart<ShoppingBagIcon className="ml-2 w-4 h-4" />
             </Button>
             :
             <>

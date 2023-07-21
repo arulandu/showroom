@@ -49,6 +49,7 @@ import { Dialog, DialogTrigger, DialogDescription, DialogFooter, DialogHeader, D
 import { PlusCircleIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { tagsAtom } from "./store"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 const nameAtom = atom("")
 const descAtom = atom("")
@@ -106,7 +107,7 @@ export function CreateProduct({ serverTags }: { serverTags: Tag[] }) {
         title: "Created",
         description: JSON.stringify(product),
       })
-      
+
       setOpen(false)
       router.refresh()
     } catch {
@@ -116,11 +117,25 @@ export function CreateProduct({ serverTags }: { serverTags: Tag[] }) {
     }
   }
 
+  // const tooltip = (
+
+  // )
+
   return (
+
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="secondary" className=" h-full w-full flex items-center justify-center">
-          <PlusCircleIcon className="w-8 h-8 text-secondary-foreground opacity-50" />
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <PlusCircleIcon className="w-8 h-8 text-secondary-foreground opacity-50" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Create product</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -178,7 +193,6 @@ export function CreateProduct({ serverTags }: { serverTags: Tag[] }) {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-
   )
 }
 
