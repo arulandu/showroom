@@ -11,7 +11,7 @@ export default async function Home() {
     <>
       <div className='min-h-screen flex-grow flex flex-col items-center justify-start'>
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-          Order Terminal
+          Store
         </h1>
         <Store products={products} tags={tags}/>
       </div>

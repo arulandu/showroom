@@ -38,7 +38,7 @@ const OrderItemRow = ({ product }: { product: any }) => {
           <MinusIcon className="w-4 h-4" />
         </Button>
         <p className="mx-4 text-muted-foreground">{product.quantity}</p>
-        <Button variant="secondary" className="w-fit" disabled={product.stock > bag ? false : true} onClick={() => setBag(bag + 1)}>
+        <Button variant="secondary" className="w-fit" disabled={(product.stock == null || product.stock > bag) ? false : true} onClick={() => setBag(bag + 1)}>
           <PlusIcon className="w-4 h-4" />
         </Button>
       </TableCell>

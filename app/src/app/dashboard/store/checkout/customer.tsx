@@ -27,8 +27,17 @@ export const Customer = () => {
   const search = async () => {
     // search database for user with current field values
     try {
-      const customer = (await (await fetch("/api/customer?=" + new URLSearchParams(fCustomer))).json()).customer
-      if (!customer) throw Error()
+      const {customers} = (await (await fetch("/api/customer?" + new URLSearchParams(fCustomer))).json())
+      if (!customers || customers.length == 0) throw Error()
+
+      if(customers.length > 1) {
+        // TODO: step through the customers with arrows?
+        toast({title: "Error", description: "Multiple customers with this search have been found. Please specify."})
+        return
+      }
+
+      const customer = customers[0]
+      
       setCustomer(customer)
       setName(customer.name)
       setEmail(customer.email)
@@ -61,22 +70,22 @@ export const Customer = () => {
         <form>
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" placeholder="employee@gmail.com" value={email} onChange={handleChange(setEmail)} />
-            </div>
-            <Button variant="secondary" disabled={customer ? true : false} onClick={(e) => {e.preventDefault(); search()}} className="flex-grow">Search</Button>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" placeholder="Name of the employee" value={name} onChange={handleChange(setName)} />
-            </div>
-            <div className="flex flex-col space-y-1.5">
               <Label htmlFor="phone">Phone</Label>
               <Input id="phone" placeholder="+1-(123)-456-7890" value={phone} onChange={handleChange(setPhone)} />
             </div>
-          </div>
-          <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="address">Address</Label>
-            <Input id="address" placeholder="123 Wallaby Way, Shelby, Australia" value={address} onChange={handleChange(setAddress)} />
+            <Button variant="secondary" disabled={customer ? true : false} onClick={(e) => { e.preventDefault(); search() }} className="flex-grow">Search</Button>
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="name">Name</Label>
+              <Input id="name" placeholder="Name of the customer" value={name} onChange={handleChange(setName)} />
+            </div>
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" placeholder="employee@gmail.com" value={email} onChange={handleChange(setEmail)} />
+            </div>
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="address">Address</Label>
+              <Input id="address" placeholder="123 Wallaby Way, Shelby, Australia" value={address} onChange={handleChange(setAddress)} />
+            </div>
           </div>
         </form>
       </CardContent >

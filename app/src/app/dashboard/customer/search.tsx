@@ -8,43 +8,53 @@ import { handleChange } from "@/lib/handleChange"
 import { atom, useAtom } from "jotai"
 import { CheckCheckIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
-
-export const customerAtom = atom<any>(null)
-const emailAtom = atom("")
+import { useState } from "react"
 
 export const CustomerSearch = () => {
   const { toast } = useToast()
   const router = useRouter()
-  const [email, setEmail] = useAtom(emailAtom)
-  const [customer, setCustomer] = useAtom(customerAtom)
+  const [phone, setPhone] = useState("")
+  const [processing, setProcessing] = useState(false)
 
   const search = async () => {
     // search database for user with current field values
     try {
-      const customer = (await (await fetch("/api/customer?=" + new URLSearchParams({email}))).json()).customer
-      if (!customer) throw Error()
-      setCustomer(customer)
+      setProcessing(true)
+      
+      const {customers} = (await (await fetch("/api/customer?" + new URLSearchParams({phone}))).json())
+      if (!customers || customers.length == 0) throw Error()
+
+      if(customers.length > 1) {
+        // TODO: step through the customers with arrows?
+        toast({title: "Error", description: "Multiple customers with this search have been found. Please specify."})
+        return
+      }
+
+      const customer = customers[0]
+
       toast({ title: "Found customer." })
       router.push(`/dashboard/customer/${customer.id}`)
     } catch {
       toast({ title: "Not found.", description: "This customer's details was not found in our system. please update and try again. If this is the customer's first recorded entry, create a new customer." })
     }
+
+    setProcessing(false)
   }
 
   return (
     <Card className="my-2 max-w-3xl">
       <CardHeader>
-        <CardTitle>Customer <CheckCheckIcon className={`${customer ? "inline" : "hidden"} text-green-400`} /></CardTitle>
+        <CardTitle>Customer</CardTitle>
         <CardDescription>View details for a returning customer.</CardDescription>
       </CardHeader>
       <CardContent>
         <form>
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" placeholder="employee@gmail.com" value={email} onChange={handleChange(setEmail)} />
+              <Label htmlFor="phone">Phone</Label>
+              <Input id="phone" placeholder="+1-(123)-456-7890" value={phone} onChange={handleChange(setPhone)} />
             </div>
-            <Button variant="secondary" disabled={customer ? true : false} onClick={(e) => {e.preventDefault(); search()}} className="flex-grow">Search</Button>
+            <Button variant="secondary" disabled={processing ? true : false} onClick={(e) => {e.preventDefault(); search()}} className="flex-grow">Search</Button>
           </div>
         </form>
       </CardContent >

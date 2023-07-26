@@ -60,33 +60,26 @@ const sgstAtom = atom("")
 const inventoryAtom = atom<CheckedState>(false)
 const stockAtom = atom("")
 const selectedTagsAtom = atom<Tag[]>([])
-const openAtom = atom(false)
 
 export function EditProduct({ product, onClose }: { product: Product, onClose: () => any }) {
   const [tags, setTags] = useAtom(tagsAtom)
 
-  useHydrateAtoms([
-    [nameAtom, product.name],
-    [descAtom, product.description],
-    [priceAtom, product.basePrice.toString()],
-    [cgstAtom, product.cgstTaxRate.toString()],
-    [sgstAtom, product.sgstTaxRate.toString()],
-    [inventoryAtom, product.stock == null ? false : true],
-    [stockAtom, product.stock == null ? "" : product.stock.toString()],
-    [selectedTagsAtom, product.tagIds.map(id => tags.find((v) => v.id == id)!)]
-  ])
+  const hydrate = () => {
+    setSelectedTags(product.tagIds.map(id => tags.find((v) => v.id == id)!))
+  }
 
   const { toast } = useToast()
   const [session] = useAtom(sessionAtom)
   const router = useRouter()
-  const [open, setOpen] = useAtom(openAtom)
-  const [name, setName] = useAtom(nameAtom)
-  const [description, setDescription] = useAtom(descAtom)
-  const [basePrice, setPrice] = useAtom(priceAtom)
-  const [cgstTaxRate, setCGST] = useAtom(cgstAtom)
-  const [sgstTaxRate, setSGST] = useAtom(sgstAtom)
-  const [inventory, setInventory] = useAtom(inventoryAtom)
-  const [stock, setStock] = useAtom(stockAtom)
+  const [open, setOpen] = useState(false)
+
+  const [name, setName] = useState(product.name)
+  const [description, setDescription] = useState(product.description)
+  const [basePrice, setPrice] = useState(product.basePrice.toString())
+  const [cgstTaxRate, setCGST] = useState(product.cgstTaxRate.toString())
+  const [sgstTaxRate, setSGST] = useState(product.sgstTaxRate.toString())
+  const [inventory, setInventory] = useState<CheckedState>(product.stock == null ? false : true)
+  const [stock, setStock] = useState(product.stock == null ? "" : product.stock.toString())
   const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom)
   const [processing, setProcessing] = useState(false)
 
@@ -125,7 +118,7 @@ export function EditProduct({ product, onClose }: { product: Product, onClose: (
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(o) => {if(o) hydrate(); setOpen(o);}}>
       <DialogTrigger asChild>
         {/* TODO: better solution to nesting dialog in dropdown */}
         <div role="menuitem" className={"relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"}>

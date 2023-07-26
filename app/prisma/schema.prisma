@@ -14,8 +14,8 @@ model Customer {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   
   name String
-  email String @unique
-  phone String
+  email String?
+  phone String @unique
   address String
   pfp String?
 

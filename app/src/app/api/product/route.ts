@@ -6,7 +6,7 @@ export async function PUT(req: NextRequest) {
   const session = await getSession()
   const body = await req.json()
   const product = await db.product.update({
-    where: {id: body.productId},
+    where: { id: body.productId },
     data: {
       name: body.name,
       description: body.description,
@@ -15,11 +15,11 @@ export async function PUT(req: NextRequest) {
       sgstTaxRate: body.sgstTaxRate,
       stock: session.user.admin ? body.stock : undefined,
       tags: {
-        set: body.tagIds.map((id: string) => {return { id }})
+        set: body.tagIds.map((id: string) => { return { id } })
       }
     }
   })
-  return NextResponse.json({product})
+  return NextResponse.json({ product })
 }
 
 export async function POST(req: NextRequest) {
@@ -33,22 +33,39 @@ export async function POST(req: NextRequest) {
       sgstTaxRate: body.sgstTaxRate,
       stock: body.stock,
       tags: {
-        connect: body.tagIds.map((id: string) => {return {id}})
+        connect: body.tagIds.map((id: string) => { return { id } })
       }
     }
   })
-  
-  return NextResponse.json({product})
+
+  return NextResponse.json({ product })
 }
 
 export async function DELETE(req: NextRequest) {
   const params = req.nextUrl.searchParams
   const id = params.get('id')
-  
-  if(id){
+
+  try {
+    if(!id) throw Error("param {id} not given")
+
+    const res = await db.product.findUnique({
+      where: { id },
+      select: {
+        _count: {
+          select: {
+            orderItems: true,
+            stockEvents: true
+          }
+        }
+      }
+    })
+
+    if (!res) throw Error("product not found")
+    if (res._count.orderItems > 0 || res._count.stockEvents > 0) throw Error("Product has already been used in an order / stock event.")
+
     // disconnect many-to-many relation
     const product = await db.product.update({
-      where: {id},
+      where: { id },
       data: {
         tags: {
           set: []
@@ -56,13 +73,13 @@ export async function DELETE(req: NextRequest) {
       }
     })
 
-    const deleteProduct = await db.product.delete({where: {id}})
-    
+    const deleteProduct = await db.product.delete({ where: { id } })
+
     return NextResponse.json({
       product,
       deleteProduct
     })
-  } else {
-    return NextResponse.json({}, {status: 400})
+  } catch {
+    return NextResponse.json({}, { status: 400 })
   }
 }
