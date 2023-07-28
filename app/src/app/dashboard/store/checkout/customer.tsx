@@ -52,7 +52,12 @@ export const Customer = () => {
   const create = async () => {
     // create new customer with current field values
     try {
-      const customer = (await (await fetch("/api/customer", { method: "POST", body: JSON.stringify(fCustomer) })).json()).customer
+      const res = await fetch("/api/customer", { method: "POST", body: JSON.stringify(fCustomer) })
+      if(res.status == 400){
+        toast({title: "Could not create.", description: "Duplicate phone number."})
+        return;
+      }
+      const {customer} = await res.json()
       setCustomer(customer)
       toast({ title: "Created." })
     } catch {

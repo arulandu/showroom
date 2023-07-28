@@ -5,10 +5,12 @@ import { Payment, paymentAtom } from "../../store/checkout/payment";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { useAtom } from "jotai";
+import { useRouter } from "next/navigation";
 
 export const PayInvoice = ({ order }: { order: any }) => {
   const { toast } = useToast()
   const [payment] = useAtom(paymentAtom)
+  const router = useRouter()
 
   const pay = async () => {
     try {
@@ -20,6 +22,8 @@ export const PayInvoice = ({ order }: { order: any }) => {
           method: payment.method,
         })
       })).json()
+
+      router.refresh()
 
       toast({ title: `Paid ₹${payment.amount}` })
     } catch {
