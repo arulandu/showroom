@@ -49,7 +49,7 @@ export const Receipt = ({ order }: { order: any }) => {
                 order.invoice.payments.map((payment: any) => <Text key={payment.id}>* {payment.method} ₹{payment.amount.toFixed(2)}</Text>)
               }
             </View>
-            <Text style={{ fontWeight: order.amountOwed > 0 ? "bold" : "normal" }}>Outstanding Amount: ₹{order.amountOwed.toFixed(2)}</Text>
+            <Text style={{ fontWeight: order.amountOwed > 0 ? "bold" : "normal" }}>Outstanding Balance: ₹{order.amountOwed.toFixed(2)}</Text>
           </View>
         </View>
 
