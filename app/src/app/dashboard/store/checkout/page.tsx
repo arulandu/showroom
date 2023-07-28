@@ -104,10 +104,10 @@ export default function Checkout() {
               <TableRow>
                 <TableHead className="w-[100px]">Quantity</TableHead>
                 <TableHead>Name</TableHead>
-                <TableHead>Unit Price (₹)</TableHead>
+                <TableHead>Unit Price (Rs.)</TableHead>
                 <TableHead>CGST</TableHead>
                 <TableHead>SGST</TableHead>
-                <TableHead className="text-right">Total (₹)</TableHead>
+                <TableHead className="text-right">Total (Rs.)</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -121,7 +121,7 @@ export default function Checkout() {
                 <TableCell></TableCell>
                 <TableCell></TableCell>
                 <TableCell></TableCell>
-                <TableCell className="text-right font-bold">₹{total.toFixed(2)}</TableCell>
+                <TableCell className="text-right font-bold">Rs.{total.toFixed(2)}</TableCell>
               </TableRow>
             </TableBody>
           </Table>

@@ -25,7 +25,7 @@ export const PayInvoice = ({ order }: { order: any }) => {
 
       router.refresh()
 
-      toast({ title: `Paid ₹${payment.amount}` })
+      toast({ title: `Paid Rs.${payment.amount}` })
     } catch {
       toast({ title: "Error"})
     }

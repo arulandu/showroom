@@ -72,7 +72,7 @@ export const ProfitReport = () => {
       {events.length > 0 ?
         <>
           <Separator />
-          <p className="text-center text-xl text-muted-foreground">Total: {total >= 0 ? "+" : "-"}₹{Math.abs(total).toFixed(2)}</p>
+          <p className="text-center text-xl text-muted-foreground">Total: {total >= 0 ? "+" : "-"}Rs.{Math.abs(total).toFixed(2)}</p>
           <Separator />
         </>
         : null}
@@ -93,15 +93,15 @@ export const ProfitReport = () => {
               {
                 event.type === "order" ?
                   <>
-                    <TableHead className=" text-green-400">+₹{event.invoice.amountPaid}</TableHead>
+                    <TableHead className=" text-green-400">+Rs.{event.invoice.amountPaid}</TableHead>
                     <TableHead>Order</TableHead>
                     <TableHead className="flex items-center"><Link href={`/dashboard/order/${event.id}`}><ExternalLinkIcon className="ml-2 w-4" /></Link></TableHead>
                   </>
                   :
                   <>
-                    <TableHead className=" text-destructive">-₹{event.price * event.delta}</TableHead>
+                    <TableHead className=" text-destructive">-Rs.{event.price * event.delta}</TableHead>
                     <TableHead>Stock</TableHead>
-                    <TableHead>+{event.delta} {event.product.name} for ₹ {event.price} e.a.  </TableHead>
+                    <TableHead>+{event.delta} {event.product.name} for Rs. {event.price} e.a.  </TableHead>
                   </>
               }
 
