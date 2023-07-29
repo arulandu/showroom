@@ -156,7 +156,7 @@ export function CreateProduct({ serverTags }: { serverTags: Tag[] }) {
             <TagFilter title="Tag" options={tags.map(t => { return { label: t.name, value: t }; })} />
           </div>
           <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="price">Base Price</Label>
+            <Label htmlFor="price">Base Selling Price</Label>
             <Input id="price" placeholder="MSRP / On Road Price in Rs." value={basePrice} onChange={handleChange(setPrice)} />
           </div>
           <div className="space-y-1.5">
