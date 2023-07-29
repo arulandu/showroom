@@ -112,7 +112,7 @@ export function StockProduct({ product, onClose }: { product: Product, onClose: 
             <Input id="stock" placeholder="# of units bought" value={stock} onChange={handleChange(setStock)} />
           </div>
           <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="price">Unit Price</Label>
+            <Label htmlFor="price">Unit Cost</Label>
             <Input id="price" placeholder="Price per unit bought" value={price} onChange={handleChange(setPrice)} />
           </div>
         </div>

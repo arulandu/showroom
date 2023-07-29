@@ -85,7 +85,7 @@ export const Payment = ({ total, className }: { total: number, className?: strin
           </div>
         </div>
         <div className="flex flex-col space-y-1.5">
-          <Label htmlFor="amount">Payment Amount (₹)</Label>
+          <Label htmlFor="amount">Payment Amount (Rs.)</Label>
           <Input id="amount" placeholder={`How much did the buyer pay?`} value={amount} onChange={handleChange(setAmount)} />
         </div>
       </CardContent>

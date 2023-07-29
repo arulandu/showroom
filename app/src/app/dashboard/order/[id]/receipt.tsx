@@ -39,17 +39,17 @@ export const Receipt = ({ order }: { order: any }) => {
           <View>
             <Text style={{ textDecoration: 'underline', marginTop: 10 }}>Items</Text>
             {order.items.map((item: any) =>
-              <Text key={item.id}>{item.quantity}x --- {item.product.name} --- ₹{item.price.toFixed(2)} e.a. --- (C {item.product.cgstTaxRate * 100}% S {item.product.sgstTaxRate * 100}%)</Text>
+              <Text key={item.id}>{item.quantity}x --- {item.product.name} --- Rs.{item.price.toFixed(2)} e.a. --- (C {item.product.cgstTaxRate * 100}% S {item.product.sgstTaxRate * 100}%)</Text>
             )}
           </View>
           <View style={{ marginTop: 30, textAlign: "right" }}>
-            <Text>Total: ₹{order.invoice.amount.toFixed(2)}</Text>
-            <View>
+            <Text>Total: Rs.{order.invoice.amount.toFixed(2)}</Text>
+            <View style={{marginVertical: 10}}>
               {
-                order.invoice.payments.map((payment: any) => <Text key={payment.id}>* {payment.method} ₹{payment.amount.toFixed(2)}</Text>)
+                order.invoice.payments.map((payment: any) => <Text key={payment.id}>({new Date(payment.createdAt).toLocaleString()}) {payment.method} Rs.{payment.amount.toFixed(2)}</Text>)
               }
             </View>
-            <Text style={{ fontWeight: order.amountOwed > 0 ? "bold" : "normal" }}>Outstanding Amount: ₹{order.amountOwed.toFixed(2)}</Text>
+            <Text style={{ fontWeight: order.amountOwed > 0 ? "bold" : "normal" }}>Outstanding Balance: Rs.{order.amountOwed.toFixed(2)}</Text>
           </View>
         </View>
 

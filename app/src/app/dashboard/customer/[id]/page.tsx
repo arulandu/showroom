@@ -63,7 +63,7 @@ export default async function Home({ params }: { params: { id: string } }) {
           <h3 className="text-center scroll-m-20 text-2xl font-semibold tracking-tight">Order History</h3>
           <div className="w-full grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-4 ">
             {sortedOrders.map(order =>
-              <OrderCard order={order} />
+              <OrderCard order={order} key={order.id}/>
             )}
           </div>
         </div>

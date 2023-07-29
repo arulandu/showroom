@@ -8,14 +8,14 @@ export const OrderCard = ({ order }: { order: any }) => {
   order.amountOwed = order.invoice.amount - order.invoice.amountPaid
 
   return (
-    <Card className="">
+    <Card className="" key={order.id}>
       <CardHeader>
         <div className="flex justify-between items-start">
-          <CardTitle className="scroll-m-20 text-lg font-semibold tracking-tight">Order for ₹{order.invoice.amount} </CardTitle>
+          <CardTitle className="scroll-m-20 text-lg font-semibold tracking-tight">Order for Rs.{order.invoice.amount} </CardTitle>
           <Link href={`/dashboard/order/${order.id}`} className="text-muted-foreground"><ExternalLinkIcon className="w-4"/></Link>
         </div>
         <CardDescription>{new Date(order.createdAt).toLocaleString()}</CardDescription>
-        <CardDescription className={`${order.amountOwed > 0 ? "text-destructive" : ""}`}>₹{order.amountOwed} Owed</CardDescription>
+        <CardDescription className={`${order.amountOwed > 0 ? "text-destructive" : ""}`}>Rs.{order.amountOwed} Owed</CardDescription>
       </CardHeader>
     </Card>
   );
