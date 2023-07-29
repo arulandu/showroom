@@ -44,9 +44,9 @@ export const Receipt = ({ order }: { order: any }) => {
           </View>
           <View style={{ marginTop: 30, textAlign: "right" }}>
             <Text>Total: Rs.{order.invoice.amount.toFixed(2)}</Text>
-            <View>
+            <View style={{marginVertical: 10}}>
               {
-                order.invoice.payments.map((payment: any) => <Text key={payment.id}>* {payment.method} Rs.{payment.amount.toFixed(2)}</Text>)
+                order.invoice.payments.map((payment: any) => <Text key={payment.id}>({new Date(payment.createdAt).toLocaleString()}) {payment.method} Rs.{payment.amount.toFixed(2)}</Text>)
               }
             </View>
             <Text style={{ fontWeight: order.amountOwed > 0 ? "bold" : "normal" }}>Outstanding Balance: Rs.{order.amountOwed.toFixed(2)}</Text>
