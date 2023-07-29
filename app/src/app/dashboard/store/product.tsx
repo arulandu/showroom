@@ -74,7 +74,7 @@ export default function Product({ product }: { product: any }) {
       <CardHeader className="relative">
         <div className="flex justify-between">
           <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-            {product.name} {product.stock == null ? "" : `(Qt. ${product.stock})`}
+            {product.name}
           </h4>
           <ActionsMenu product={product} />
         </div>
@@ -92,7 +92,7 @@ export default function Product({ product }: { product: any }) {
       </CardHeader>
       <CardContent className="text-sm">
         <p>{product.description}</p>
-        <p>Price: {product.basePrice} CGST: {product.cgstTaxRate} SGST: {product.sgstTaxRate}</p>
+        <p>Price: {product.basePrice} CGST: {product.cgstTaxRate} SGST: {product.sgstTaxRate} {product.stock == null ? "" : `Qt: ${product.stock}`}</p>
         <div className="mt-4 w-fit flex items-center">
           {bag === undefined ?
             <Button variant="secondary" className="" onClick={() => setBag(1)}>
