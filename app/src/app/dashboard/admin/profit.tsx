@@ -49,13 +49,8 @@ export const ProfitReport = () => {
             <Label htmlFor="dates">Date Range</Label>
             <DatePickerWithRange atom={dateAtom} id="dates" />
           </div>
-          <div className="flex flex-col space-y-1.5 w-full">
-            {/* <Label htmlFor="filter">Filter</Label> */}
+          {/* <div className="flex flex-col space-y-1.5 w-full">
             <RadioGroup id="filter" value={filter} onValueChange={setFilter} className="flex justify-between">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="profit" id="r1" />
-                <Label htmlFor="r1">Profit</Label>
-              </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="revenue" id="r2" />
                 <Label htmlFor="r2">Revenue</Label>
@@ -64,15 +59,19 @@ export const ProfitReport = () => {
                 <RadioGroupItem value="expenses" id="r3" />
                 <Label htmlFor="r3">Expenses</Label>
               </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="profit" id="r1" />
+                <Label htmlFor="r1">Profit</Label>
+              </div>
             </RadioGroup>
-          </div>
+          </div> */}
           <Button variant="secondary" onClick={search} className="w-full">Search</Button>
         </CardContent>
       </Card>
       {events.length > 0 ?
         <>
           <Separator />
-          <p className="text-center text-xl text-muted-foreground">Total: {total >= 0 ? "+" : "-"}Rs.{Math.abs(total).toFixed(2)}</p>
+          <p className={`text-center text-xl ${total >= 0 ? "text-green-500" : "text-destructive"}`}>Total: {total >= 0 ? "+" : "-"}Rs.{Math.abs(total).toFixed(2)}</p>
           <Separator />
         </>
         : null}
@@ -81,7 +80,7 @@ export const ProfitReport = () => {
         <TableHeader>
           <TableRow>
             <TableHead className="">Date</TableHead>
-            <TableHead>Amount</TableHead>
+            <TableHead className="text-right">Amount</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Details</TableHead>
           </TableRow>
@@ -93,15 +92,15 @@ export const ProfitReport = () => {
               {
                 event.type === "order" ?
                   <>
-                    <TableHead className=" text-green-400">+Rs.{event.invoice.amountPaid}</TableHead>
+                    <TableHead className=" text-green-500 text-right">+Rs.{event.invoice.amountPaid.toFixed(2)}</TableHead>
                     <TableHead>Order</TableHead>
                     <TableHead className="flex items-center"><Link href={`/dashboard/order/${event.id}`}><ExternalLinkIcon className="ml-2 w-4" /></Link></TableHead>
                   </>
                   :
                   <>
-                    <TableHead className=" text-destructive">-Rs.{event.price * event.delta}</TableHead>
+                    <TableHead className=" text-destructive text-right">-Rs.{(event.price * event.delta).toFixed(2)}</TableHead>
                     <TableHead>Stock</TableHead>
-                    <TableHead>+{event.delta} {event.product.name} for Rs. {event.price} e.a.  </TableHead>
+                    <TableHead>{event.delta} x Rs.{event.price} ({event.product.name}) </TableHead>
                   </>
               }
 
